@@ -6,6 +6,8 @@
   <img src="docs/images/demo_collapsed.png" width="200" alt="collapsed">
 </p>
 
+https://github.com/user-attachments/assets/7dcad323-083e-4df1-8625-b7d79f69b825
+
 ---
 
 [![](https://jitpack.io/v/SherlockGougou/StickyHeaders.svg)](https://jitpack.io/#SherlockGougou/StickyHeaders)
