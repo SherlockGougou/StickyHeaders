@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Attributes for StickyLinearLayout -->
+    <declare-styleable name="StickyLinearLayout">
+        <!-- The sticky mode: multi (stack headers) or single (only one header visible) -->
+        <attr name="stickyMode" format="enum">
+            <!-- Multiple headers stack on top of each other (default) -->
+            <enum name="multi" value="0" />
+            <!-- Only one header is visible, new header pushes out the previous one -->
+            <enum name="single" value="1" />
+        </attr>
+    </declare-styleable>
+
     <!-- Layout parameters for children of StickyLinearLayout -->
     <declare-styleable name="StickyLinearLayout_Layout">
         <!-- Whether this child view should stick to the top when scrolled -->

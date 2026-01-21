@@ -3,14 +3,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("./common-60.keystore")
-            storePassword = "000000"
-            keyAlias = "000000"
-            keyPassword = "000000"
-        }
-    }
     namespace = "com.gouqinglin.stickyheader"
     compileSdk {
         version = release(36) {
@@ -18,16 +10,33 @@ android {
         }
     }
 
+    // Only configure custom signing if keystore exists (for local builds)
+    val keystoreFile = file("./common.keystore")
+    if (keystoreFile.exists()) {
+        signingConfigs {
+            getByName("debug") {
+                storeFile = keystoreFile
+                storePassword = "000000"
+                keyAlias = "000000"
+                keyPassword = "000000"
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "com.gouqinglin.stickyheader"
         minSdk = 24
         targetSdk = 36
-        versionCode = 100
-        versionName = "1.0.0"
+        versionCode = 101
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig = signingConfigs.getByName("debug")
         multiDexEnabled = true
+
+        // Only use custom signing config if keystore exists
+        if (keystoreFile.exists()) {
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 
     buildTypes {
@@ -50,6 +59,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(project(":stickyheader"))
+    // implementation("com.github.SherlockGougou:StickyHeaders:1.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `onPinnedViewsChanged()` - Called when the list of pinned views changes
   - `onPinnedHeightChanged()` - Called when total pinned height changes
 - Helper methods: `getPinnedViews()`, `getPinnedHeight()`, `isViewPinned()`
+- **Two sticky modes via `app:stickyMode` attribute:**
+  - `multi` (default): Multiple headers stack on top of each other
+  - `single`: Only one header visible, new header pushes out the previous one
+- Programmatic mode switching via `stickyMode` property
 
 ### Features
 - Multi-level sticky header support

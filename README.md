@@ -45,7 +45,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeaders:1.0.0")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.1")
 }
 ```
 
@@ -94,9 +94,43 @@ dependencies {
 
 ### 📖 Attributes
 
+**Container Attributes (`StickyLinearLayout`):**
+
+| Attribute        | Format | Default | Description                                                   |
+|------------------|--------|---------|---------------------------------------------------------------|
+| `app:stickyMode` | enum   | `multi` | `multi`: Headers stack on top of each other<br>`single`: Only one header visible, new pushes out old |
+
+**Child Attributes:**
+
 | Attribute        | Format  | Description                                                   |
 |------------------|---------|---------------------------------------------------------------|
 | `app:layout_pin` | boolean | Whether this child view should stick to the top when scrolled |
+
+### 🎯 Sticky Modes
+
+#### MULTI Mode (Default)
+Multiple headers stack on top of each other. When a new header becomes pinned, it appears below the previously pinned headers.
+
+```xml
+<com.gouqinglin.stickyheader.lib.StickyLinearLayout
+    app:stickyMode="multi"
+    ... >
+```
+
+#### SINGLE Mode
+Only one header is visible at a time. When a new header becomes pinned, it pushes the previous header out of view.
+
+```xml
+<com.gouqinglin.stickyheader.lib.StickyLinearLayout
+    app:stickyMode="single"
+    ... >
+```
+
+You can also change the mode programmatically:
+
+```kotlin
+stickyLinearLayout.stickyMode = StickyMode.SINGLE
+```
 
 ### 🔧 Optional: AppBarLayoutBehavior
 
@@ -196,7 +230,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeaders:1.0.0")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.1")
 }
 ```
 
@@ -245,9 +279,43 @@ dependencies {
 
 ### 📖 属性
 
+**容器属性 (`StickyLinearLayout`):**
+
+| 属性               | 格式   | 默认值   | 说明                                                           |
+|------------------|------|-------|--------------------------------------------------------------|
+| `app:stickyMode` | enum | `multi` | `multi`: 多个 Header 堆叠吸顶<br>`single`: 只显示一个 Header，新的会顶掉旧的 |
+
+**子 View 属性:**
+
 | 属性               | 格式      | 说明               |
 |------------------|---------|------------------|
 | `app:layout_pin` | boolean | 该子 View 在滚动时是否吸顶 |
+
+### 🎯 吸顶模式
+
+#### MULTI 模式（默认）
+多个 Header 堆叠吸顶。当新的 Header 吸顶时，会显示在之前吸顶的 Header 下方。
+
+```xml
+<com.gouqinglin.stickyheader.lib.StickyLinearLayout
+    app:stickyMode="multi"
+    ... >
+```
+
+#### SINGLE 模式
+只显示一个 Header。当新的 Header 吸顶时，会把之前的 Header 顶出屏幕。
+
+```xml
+<com.gouqinglin.stickyheader.lib.StickyLinearLayout
+    app:stickyMode="single"
+    ... >
+```
+
+也可以通过代码动态切换模式：
+
+```kotlin
+stickyLinearLayout.stickyMode = StickyMode.SINGLE
+```
 
 ### 🔧 可选：AppBarLayoutBehavior
 
