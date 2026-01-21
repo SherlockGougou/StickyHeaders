@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
+    `maven-publish`
 }
+
+// Library version
+val libraryVersion = "1.0.0"
+val libraryGroupId = "com.gouqinglin"
+val libraryArtifactId = "stickyheader"
 
 android {
     namespace = "com.gouqinglin.stickyheader.lib"
@@ -27,6 +33,12 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 

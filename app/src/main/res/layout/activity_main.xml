@@ -27,14 +27,14 @@
             android:orientation="vertical"
             app:layout_behavior=".lib.AppBarLayoutBehavior">
 
-            <!-- 滚出去1：设置scroll|snap，实现吸附效果，可滑出屏幕 -->
+            <!-- SCROLL_OUT_1：设置scroll|snap，实现吸附效果，可滑出屏幕 -->
             <TextView
                 android:id="@+id/tv_scroll_out_1"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:background="#F18800"
                 android:gravity="center"
-                android:text="滚出去1"
+                android:text="SCROLL_OUT_1"
                 android:textColor="#FFFFFF"
                 android:textSize="38sp"
                 app:layout_scrollFlags="scroll|snap" />
@@ -58,14 +58,14 @@
                     android:textSize="28sp"
                     app:layout_pin="true" />
 
-                <!-- 滚出去2：普通View，会随着滚动消失 -->
+                <!-- SCROLL_OUT_2：普通View，会随着滚动消失 -->
                 <TextView
                     android:id="@+id/tv_scroll_out_2"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:background="#0188F0"
                     android:gravity="center"
-                    android:text="滚出去2"
+                    android:text="SCROLL_OUT_2"
                     android:textColor="#FFFFFF"
                     android:textSize="38sp" />
 
@@ -81,14 +81,14 @@
                     android:textSize="28sp"
                     app:layout_pin="true" />
 
-                <!-- 滚出去3：普通View，会随着滚动消失 -->
+                <!-- SCROLL_OUT_3：普通View，会随着滚动消失 -->
                 <TextView
                     android:id="@+id/tv_scroll_out_3"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:background="#FF5722"
                     android:gravity="center"
-                    android:text="滚出去3"
+                    android:text="SCROLL_OUT_3"
                     android:textColor="#FFFFFF"
                     android:textSize="38sp" />
 
@@ -104,14 +104,14 @@
                     android:textSize="28sp"
                     app:layout_pin="true" />
 
-                <!-- 滚出去4：普通View，会随着滚动消失 -->
+                <!-- SCROLL_OUT_4：普通View，会随着滚动消失 -->
                 <TextView
                     android:id="@+id/tv_scroll_out_4"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:background="#FFC107"
                     android:gravity="center"
-                    android:text="滚出去4"
+                    android:text="SCROLL_OUT_4"
                     android:textColor="#FFFFFF"
                     android:textSize="36sp" />
 

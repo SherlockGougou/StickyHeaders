@@ -11,6 +11,45 @@ import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 
+/**
+ * A vertical LinearLayout that supports multi-level sticky headers.
+ *
+ * This layout must be placed inside an [AppBarLayout] and works by listening to
+ * offset changes. When a child view marked with `app:layout_pin="true"` reaches
+ * the top of the visible area, it will be pinned (stuck) in place while other
+ * views continue to scroll.
+ *
+ * ## Usage
+ *
+ * 1. Place `StickyLinearLayout` inside an `AppBarLayout`
+ * 2. Set `app:layout_scrollFlags="scroll|exitUntilCollapsed"` on this layout
+ * 3. Add `app:layout_pin="true"` to child views that should stick
+ *
+ * ## Example
+ *
+ * ```xml
+ * <com.google.android.material.appbar.AppBarLayout
+ *     android:layout_width="match_parent"
+ *     android:layout_height="wrap_content">
+ *
+ *     <com.gouqinglin.stickyheader.lib.StickyLinearLayout
+ *         android:layout_width="match_parent"
+ *         android:layout_height="wrap_content"
+ *         app:layout_scrollFlags="scroll|exitUntilCollapsed">
+ *
+ *         <TextView
+ *             android:layout_width="match_parent"
+ *             android:layout_height="50dp"
+ *             app:layout_pin="true" />
+ *
+ *     </com.gouqinglin.stickyheader.lib.StickyLinearLayout>
+ *
+ * </com.google.android.material.appbar.AppBarLayout>
+ * ```
+ *
+ * @see AppBarLayout
+ * @see LayoutParams.pin
+ */
 class StickyLinearLayout @JvmOverloads constructor(
     ctx: Context,
     attrs: AttributeSet? = null,
@@ -111,9 +150,18 @@ class StickyLinearLayout @JvmOverloads constructor(
     override fun generateLayoutParams(lp: ViewGroup.LayoutParams?) = LayoutParams(lp)
 
     /**
-     * 增加pin属性
+     * Per-child layout information for children of [StickyLinearLayout].
+     *
+     * @property pin Whether this child should stick to the top when scrolled.
+     *               Set via `app:layout_pin="true"` in XML.
      */
     class LayoutParams : LinearLayout.LayoutParams {
+        /**
+         * Whether this child view should stick to the top when scrolled.
+         *
+         * When `true`, this view will be pinned at the top of the visible area
+         * (or below previously pinned views) when the user scrolls up.
+         */
         var pin = false
 
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs) {

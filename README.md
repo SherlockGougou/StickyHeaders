@@ -1,70 +1,245 @@
-# StickyHeader (traditional View)
+# StickyHeader
 
-This repo contains a reusable Android View-based sticky header container.
+<p align="center">
+  <img src="docs/images/demo_initial.png" width="200" alt="initial">
+  <img src="docs/images/demo_scrolling.png" width="200" alt="scrolling">
+  <img src="docs/images/demo_collapsed.png" width="200" alt="collapsed">
+</p>
 
-## Module
+---
 
-- `:stickyheader`: the library module.
-- `:app`: a tiny demo app.
+[![](https://jitpack.io/v/SherlockGougou/StickyHeader.svg)](https://jitpack.io/#SherlockGougou/StickyHeader)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## Library: `StickyContainerLayout`
+[English](#english) | [中文](#中文)
 
-A vertical container (`ViewGroup`) that:
+---
 
-- Lays out children vertically.
-- Supports marking multiple children as **sticky** via XML `app:layout_sticky="true"`.
-- When scrolling vertically, sticky children will **pin to the top** (supports multiple pinned in `stack` mode).
-- Works with a nested scrolling child (e.g. `RecyclerView`) via `NestedScrollingParent3`.
+## English
 
-### XML usage
+A lightweight Android library for implementing **multi-level sticky headers** using `AppBarLayout` and `CoordinatorLayout`. Unlike traditional
+approaches that require complex custom Behaviors, this library achieves the sticky effect by intelligently offsetting child views during scroll.
 
-```xml
-<com.gouqinglin.stickyheader.lib.StickyContainerLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:nestedScrollableChildId="@id/recycler"
-    app:stickyMode="stack">
+### ✨ Features
 
-    <TextView
-        ...
-        app:layout_sticky="true" />
+- 🎯 **Multi-level sticky headers** - Support unlimited number of sticky headers
+- 📱 **Easy to use** - Just add `app:layout_pin="true"` to your views
+- 🔄 **Works with AppBarLayout** - Seamlessly integrates with Material Design components
+- ⚡ **Lightweight** - Minimal overhead, no complex calculations
+- 🎨 **Flexible** - Mix sticky and non-sticky views freely
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+### 📦 Installation
 
-</com.gouqinglin.stickyheader.lib.StickyContainerLayout>
+**Step 1.** Add the JitPack repository to your root `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        // ...existing repositories...
+        maven { url = uri("https://jitpack.io") }
+    }
+}
 ```
 
-### Attributes
+**Step 2.** Add the dependency to your module's `build.gradle.kts`:
 
-Container:
-- `app:stickyMode`: `stack` | `single`
-- `app:stickyTopInset`: top inset applied to pinned area (useful with status bar / toolbar)
-- `app:nestedScrollableChildId`: which child should be treated as the nested scroll target
+```kotlin
+dependencies {
+    implementation("com.github.SherlockGougou:StickyHeader:1.0.0")
+}
+```
 
-Child LayoutParams:
-- `app:layout_sticky`: whether this child is sticky
-- `app:layout_stickyGroup`: reserved for future grouping support
-- `app:layout_stickyZIndex`: reserved for future z-index support
+### 🚀 Quick Start
 
-### Public APIs
+#### 1. Add to your layout
 
-- `setStickyMode(StickyMode)`
-- `setStickyTopInset(px: Int)`
-- `setNestedScrollableChild(view: View?)`
-- `invalidateSticky()`
-- `setOnStickyChangedListener(OnStickyChangedListener?)`
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
 
-## Notes / roadmap
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent" android:layout_height="wrap_content">
 
-This is a solid baseline that already supports:
-- Multiple sticky headers
-- A RecyclerView as a child with nested scrolling support
+        <!-- This view will scroll out -->
+        <TextView android:layout_width="match_parent" android:layout_height="200dp" android:text="Scroll Out" app:layout_scrollFlags="scroll|snap" />
 
-Next improvements (already designed for):
-- Better touch + fling handling (handoff between parent and child)
-- Grouped stickies
-- Custom `StickyBehavior` for transitions/animations
-- WindowInsets integration inside the container
+        <!-- StickyLinearLayout contains sticky headers -->
+        <com.gouqinglin.stickyheader.lib.StickyLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!-- Sticky Header 1 -->
+            <TextView android:layout_width="match_parent" android:layout_height="50dp" android:text="HEADER 1" app:layout_pin="true" />
+
+            <!-- This view will scroll out -->
+            <TextView android:layout_width="match_parent" android:layout_height="100dp" android:text="Content" />
+
+            <!-- Sticky Header 2 -->
+            <TextView android:layout_width="match_parent" android:layout_height="50dp" android:text="HEADER 2" app:layout_pin="true" />
+
+        </com.gouqinglin.stickyheader.lib.StickyLinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recycler" android:layout_width="match_parent" android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+```
+
+#### 2. Key points
+
+- Use `StickyLinearLayout` inside `AppBarLayout`
+- Set `app:layout_scrollFlags="scroll|exitUntilCollapsed"` on `StickyLinearLayout`
+- Add `app:layout_pin="true"` to views that should stick
+
+### 📖 Attributes
+
+| Attribute        | Format  | Description                                                   |
+|------------------|---------|---------------------------------------------------------------|
+| `app:layout_pin` | boolean | Whether this child view should stick to the top when scrolled |
+
+### 🔧 Optional: AppBarLayoutBehavior
+
+The library includes an optional `AppBarLayoutBehavior` that fixes common AppBarLayout issues:
+
+- Prevents bounce-back during fast scrolling
+- Fixes jitter when quickly changing scroll direction
+- Allows stopping scroll by touching the screen
+
+```xml
+
+<com.google.android.material.appbar.AppBarLayout app:layout_behavior="com.gouqinglin.stickyheader.lib.AppBarLayoutBehavior"... >
+```
+
+### 📐 How It Works
+
+The core idea is simple:
+
+1. `StickyLinearLayout` listens to `AppBarLayout`'s offset changes
+2. When a pinned view reaches the top, it offsets the view's `translationY` to keep it in place
+3. Multiple pinned views stack on top of each other
+
+This approach avoids the complexity of custom `CoordinatorLayout.Behavior` implementations while achieving the same visual effect.
+
+---
+
+## 中文
+
+一个轻量级的 Android 库，用于实现**多级吸顶效果**，基于 `AppBarLayout` 和 `CoordinatorLayout`。与需要复杂自定义 Behavior 的传统方案不同，本库通过在滚动时智能调整子
+View 的偏移来实现吸顶效果。
+
+### ✨ 特性
+
+- 🎯 **多级吸顶** - 支持无限数量的吸顶 Header
+- 📱 **使用简单** - 只需添加 `app:layout_pin="true"`
+- 🔄 **与 AppBarLayout 配合** - 无缝集成 Material Design 组件
+- ⚡ **轻量级** - 开销极小，无复杂计算
+- 🎨 **灵活** - 可自由混合吸顶和非吸顶 View
+
+### 📦 安装
+
+**步骤 1.** 在根目录的 `settings.gradle.kts` 中添加 JitPack 仓库：
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        // ...已有的仓库...
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+**步骤 2.** 在模块的 `build.gradle.kts` 中添加依赖：
+
+```kotlin
+dependencies {
+    implementation("com.github.SherlockGougou:StickyHeader:1.0.0")
+}
+```
+
+### 🚀 快速开始
+
+#### 1. 添加到布局
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <!-- 这个 View 会滚出屏幕 -->
+        <TextView android:layout_width="match_parent" android:layout_height="200dp" android:text="SCROLL_OUT_" app:layout_scrollFlags="scroll|snap" />
+
+        <!-- StickyLinearLayout 包含需要吸顶的 View -->
+        <com.gouqinglin.stickyheader.lib.StickyLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!-- 吸顶 Header 1 -->
+            <TextView android:layout_width="match_parent" android:layout_height="50dp" android:text="HEADER 1" app:layout_pin="true" />
+
+            <!-- 这个 View 会滚出屏幕 -->
+            <TextView android:layout_width="match_parent" android:layout_height="100dp" android:text="内容" />
+
+            <!-- 吸顶 Header 2 -->
+            <TextView android:layout_width="match_parent" android:layout_height="50dp" android:text="HEADER 2" app:layout_pin="true" />
+
+        </com.gouqinglin.stickyheader.lib.StickyLinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recycler" android:layout_width="match_parent" android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+```
+
+#### 2. 关键点
+
+- 在 `AppBarLayout` 中使用 `StickyLinearLayout`
+- 在 `StickyLinearLayout` 上设置 `app:layout_scrollFlags="scroll|exitUntilCollapsed"`
+- 在需要吸顶的 View 上添加 `app:layout_pin="true"`
+
+### 📖 属性
+
+| 属性               | 格式      | 说明               |
+|------------------|---------|------------------|
+| `app:layout_pin` | boolean | 该子 View 在滚动时是否吸顶 |
+
+### 🔧 可选：AppBarLayoutBehavior
+
+库中包含一个可选的 `AppBarLayoutBehavior`，用于修复常见的 AppBarLayout 问题：
+
+- 防止快速滑动时的回弹
+- 修复快速改变滑动方向时的抖动
+- 允许通过触摸屏幕停止滚动
+
+### 📐 工作原理
+
+核心思路很简单：
+
+1. `StickyLinearLayout` 监听 `AppBarLayout` 的偏移变化
+2. 当一个 pinned View 到达顶部时，通过调整其 `translationY` 使其保持在原位
+3. 多个 pinned View 会依次堆叠
+
+这种方法避免了自定义 `CoordinatorLayout.Behavior` 的复杂性，同时实现了相同的视觉效果。
+
+---
+
+## 📄 License
+
+```
+Copyright 2024 gouqinglin
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

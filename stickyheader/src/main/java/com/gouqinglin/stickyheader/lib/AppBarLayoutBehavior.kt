@@ -10,10 +10,32 @@ import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 
 /**
- * 解决appbarLayout若干问题：
- * （1）快速滑动appbarLayout会出现回弹
- * （2）快速滑动appbarLayout到折叠状态下，立马下滑，会出现抖动的问题
- * （3）滑动appbarLayout，无法通过手指按下让其停止滑动
+ * A custom [AppBarLayout.Behavior] that fixes common scrolling issues.
+ *
+ * This behavior addresses the following problems:
+ * 1. **Bounce-back**: Fast scrolling causes AppBarLayout to bounce back unexpectedly
+ * 2. **Jitter**: Quickly changing scroll direction causes visual jitter
+ * 3. **Unstoppable fling**: Unable to stop scrolling by touching the screen
+ *
+ * ## Usage
+ *
+ * Apply this behavior to your AppBarLayout in XML:
+ *
+ * ```xml
+ * <com.google.android.material.appbar.AppBarLayout
+ *     app:layout_behavior="com.gouqinglin.stickyheader.lib.AppBarLayoutBehavior"
+ *     ... >
+ * ```
+ *
+ * ---
+ *
+ * 解决 AppBarLayout 的常见滚动问题：
+ * 1. **回弹问题**：快速滑动 AppBarLayout 会出现回弹
+ * 2. **抖动问题**：快速滑动到折叠状态后立即下滑会出现抖动
+ * 3. **无法停止**：滑动过程中无法通过触摸屏幕停止滚动
+ *
+ * @param context The context
+ * @param attrs The attribute set
  */
 class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Behavior(context, attrs) {
     private var isFlinging = false
