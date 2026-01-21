@@ -11,25 +11,14 @@ import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 
-/**
- * 竖向的LinearLayout，支持内部View声明为pin，以在滑动到顶部时悬停。
- *
- * 核心思想：在自定义的Layout中，设置子View的垂直offset，
- * 以实现当Layout移动时，子View相对静止（悬停效果）。
- *
- * 使用方式：
- * 1. 将此Layout放在AppBarLayout内部
- * 2. 为此Layout设置 app:layout_scrollFlags="scroll|exitUntilCollapsed"
- * 3. 在子View中使用 app:layout_pin="true" 来声明需要吸顶的View
- */
-class FloatLinearLayout @JvmOverloads constructor(
+class StickyLinearLayout @JvmOverloads constructor(
     ctx: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : LinearLayout(ctx, attrs, defStyle) {
     private var mOnOffsetChangedListener: AppBarLayout.OnOffsetChangedListener? = null
 
-    private val TAG = "FloatLinearLayout"
+    private val TAG = "StickyLinearLayout"
 
     init {
         // 启用自定义绘制顺序，让pin的View绘制在最上层
@@ -37,16 +26,16 @@ class FloatLinearLayout @JvmOverloads constructor(
     }
 
     // 每个子View及其上方所有View的高度累计
-    private var mTopFloatViewMargins: SparseArray<Int>? = null
+    private var mTopStickyViewMargins: SparseArray<Int>? = null
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         var heightSum = 0
         var minHeightSum = 0
-        mTopFloatViewMargins = SparseArray(childCount)
+        mTopStickyViewMargins = SparseArray(childCount)
         (0 until childCount).forEach {
             heightSum += getChildAt(it).measuredHeight
-            mTopFloatViewMargins?.put(it, heightSum)
+            mTopStickyViewMargins?.put(it, heightSum)
             if (((getChildAt(it).layoutParams) as? LayoutParams)?.pin == true) {
                 minHeightSum += getChildAt(it).measuredHeight
             }
@@ -84,11 +73,33 @@ class FloatLinearLayout @JvmOverloads constructor(
     }
 
     /**
-     * 反转绘制顺序，让后面的View先绘制，前面的View后绘制
-     * 这样当HEADER1悬停在顶部时，会覆盖在其他View上面
+     * 自定义绘制顺序：
+     * 1. 非pin的View先绘制（在底层）
+     * 2. pin的View后绘制（在上层），按照在布局中的逆序绘制
+     *    这样先出现的pin View会在后出现的上面
      */
     override fun getChildDrawingOrder(childCount: Int, drawingPosition: Int): Int {
-        return childCount - drawingPosition - 1
+        // 收集非pin和pin的索引
+        val nonPinIndices = mutableListOf<Int>()
+        val pinIndices = mutableListOf<Int>()
+
+        for (i in 0 until childCount) {
+            val lp = getChildAt(i).layoutParams as? LayoutParams
+            if (lp?.pin == true) {
+                pinIndices.add(i)
+            } else {
+                nonPinIndices.add(i)
+            }
+        }
+
+        // 绘制顺序：先非pin的（按原顺序），再pin的（按逆序，这样第一个pin的View最后绘制，在最上层）
+        val drawOrder = nonPinIndices + pinIndices.reversed()
+
+        return if (drawingPosition < drawOrder.size) {
+            drawOrder[drawingPosition]
+        } else {
+            drawingPosition
+        }
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?) = p is LayoutParams
@@ -106,8 +117,8 @@ class FloatLinearLayout @JvmOverloads constructor(
         var pin = false
 
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs) {
-            val ta = c?.obtainStyledAttributes(attrs, R.styleable.FloatLinearLayout_Layout)
-            pin = ta?.getBoolean(R.styleable.FloatLinearLayout_Layout_layout_pin, false) ?: false
+            val ta = c?.obtainStyledAttributes(attrs, R.styleable.StickyLinearLayout)
+            pin = ta?.getBoolean(R.styleable.StickyLinearLayout_layout_pin, false) ?: false
             ta?.recycle()
         }
 
@@ -118,11 +129,13 @@ class FloatLinearLayout @JvmOverloads constructor(
                 pin = p.pin
             }
         }
+
         constructor(p: LinearLayout.LayoutParams?) : super(p) {
             if (p is LayoutParams) {
                 pin = p.pin
             }
         }
+
         constructor(p: MarginLayoutParams?) : super(p) {
             if (p is LayoutParams) {
                 pin = p.pin
@@ -132,30 +145,40 @@ class FloatLinearLayout @JvmOverloads constructor(
 
     private inner class OffsetUpdateListener : AppBarLayout.OnOffsetChangedListener {
         override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+            // 用于存储已经吸顶的pin View累计高度
+            var pinnedStackHeight = 0
+
             (0 until childCount).forEach { i ->
                 val child = getChildAt(i)
                 val lp = child.layoutParams as? LayoutParams
                 if (lp?.pin == true) {
-                    // floatStartHeight: 该子View上方所有View的高度总和（即该View的原始top位置）
-                    val floatStartHeight = (mTopFloatViewMargins?.get(i) ?: 0) - child.measuredHeight
-                    if (floatStartHeight < 0) {
-                        Log.e(TAG, "Impossible!!! floatStartHeight=$floatStartHeight, i=$i")
+                    // stickyStartHeight: 该子View上方所有View的高度总和（即该View的原始top位置）
+                    val stickyStartHeight = (mTopStickyViewMargins?.get(i) ?: 0) - child.measuredHeight
+                    if (stickyStartHeight < 0) {
+                        Log.e(TAG, "Impossible!!! stickyStartHeight=$stickyStartHeight, i=$i")
                         return
                     }
 
-                    // offset: 需要补偿的偏移量，使View悬停在顶部
-                    // -verticalOffset: AppBarLayout向上滚动的距离（正值）
-                    // top: FloatLinearLayout在AppBarLayout中的位置
-                    val offset = -verticalOffset - top
+                    // 基础偏移：AppBarLayout向上滚动的距离 - StickyLinearLayout在AppBarLayout中的位置
+                    val baseOffset = -verticalOffset - top
 
-                    // 只有当offset > floatStartHeight时，说明该View已经到达需要悬停的位置
-                    // 此时设置偏移量使其悬停
-                    // 否则offset为0，View保持原位
-                    val finalOffset = if (offset > floatStartHeight) {
-                        offset
+                    // 该View需要吸顶的触发位置：
+                    // 当View的顶部到达已吸顶View的底部时，应该开始吸顶
+                    // 触发条件：stickyStartHeight - baseOffset <= pinnedStackHeight
+                    // 即：baseOffset >= stickyStartHeight - pinnedStackHeight
+                    val triggerOffset = stickyStartHeight - pinnedStackHeight
+                    val shouldPin = baseOffset >= triggerOffset
+
+                    val finalOffset: Int
+                    if (shouldPin) {
+                        // 需要吸顶：设置偏移使View停在目标位置（已吸顶View的下方）
+                        finalOffset = baseOffset - stickyStartHeight + pinnedStackHeight
+                        pinnedStackHeight += child.measuredHeight
                     } else {
-                        0
+                        // 不需要吸顶：保持原位
+                        finalOffset = 0
                     }
+
                     getViewOffsetHelper(child).topAndBottomOffset = finalOffset
                 }
             }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 用于存储ViewOffsetHelper的tag id -->
     <item name="view_offset_helper" type="id" />
 </resources>

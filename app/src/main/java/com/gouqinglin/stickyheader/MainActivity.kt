@@ -24,6 +24,6 @@ class MainActivity : AppCompatActivity() {
         // 设置RecyclerView
         val rv = findViewById<RecyclerView>(R.id.recycler)
         rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = DemoAdapter(List(50) { index -> "Item #${index}" })
+        rv.adapter = DemoAdapter(List(50) { index -> "Item #${index + 1}" })
     }
 }
