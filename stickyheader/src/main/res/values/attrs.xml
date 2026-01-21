@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- FloatLinearLayout的子View属性 -->
+    <declare-styleable name="FloatLinearLayout_Layout">
+        <!-- 是否在滚动时悬停吸顶 -->
+        <attr name="layout_pin" format="boolean" />
+    </declare-styleable>
+
+</resources>
