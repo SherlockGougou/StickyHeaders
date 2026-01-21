@@ -3,11 +3,6 @@ plugins {
     `maven-publish`
 }
 
-// Library version
-val libraryVersion = "1.0.0"
-val libraryGroupId = "com.gouqinglin"
-val libraryArtifactId = "stickyheader"
-
 android {
     namespace = "com.gouqinglin.stickyheader.lib"
 
@@ -38,6 +33,19 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+
+                groupId = "com.github.SherlockGougou"
+                artifactId = "StickyHeaders"
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeaders:1.0.1")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.2")
 }
 ```
 
@@ -232,7 +232,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeaders:1.0.1")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.2")
 }
 ```
 
