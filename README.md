@@ -111,6 +111,49 @@ The library includes an optional `AppBarLayoutBehavior` that fixes common AppBar
 <com.google.android.material.appbar.AppBarLayout app:layout_behavior="com.gouqinglin.stickyheader.lib.AppBarLayoutBehavior"... >
 ```
 
+### 📞 Callbacks
+
+You can listen to sticky state changes using `OnStickyStateChangedListener`:
+
+```kotlin
+stickyLinearLayout.setOnStickyStateChangedListener(object : OnStickyStateChangedListener {
+    override fun onViewPinned(view: View, index: Int) {
+        // Called when a view becomes pinned
+        view.elevation = 8f
+    }
+
+    override fun onViewUnpinned(view: View, index: Int) {
+        // Called when a view is no longer pinned
+        view.elevation = 0f
+    }
+
+    override fun onPinnedViewOffsetChanged(view: View, index: Int, offset: Int) {
+        // Called when the offset of a pinned view changes (for animations)
+    }
+
+    override fun onPinnedViewsChanged(pinnedViews: List<View>) {
+        // Called when the list of pinned views changes
+    }
+
+    override fun onPinnedHeightChanged(totalPinnedHeight: Int) {
+        // Called when the total height of pinned views changes
+    }
+})
+```
+
+You can also query the current state:
+
+```kotlin
+// Get all currently pinned views
+val pinnedViews = stickyLinearLayout.getPinnedViews()
+
+// Get total height of pinned views
+val pinnedHeight = stickyLinearLayout.getPinnedHeight()
+
+// Check if a specific view is pinned
+val isPinned = stickyLinearLayout.isViewPinned(myView)
+```
+
 ### 📐 How It Works
 
 The core idea is simple:
@@ -213,6 +256,49 @@ dependencies {
 - 防止快速滑动时的回弹
 - 修复快速改变滑动方向时的抖动
 - 允许通过触摸屏幕停止滚动
+
+### 📞 状态回调
+
+使用 `OnStickyStateChangedListener` 监听吸顶状态变化：
+
+```kotlin
+stickyLinearLayout.setOnStickyStateChangedListener(object : OnStickyStateChangedListener {
+    override fun onViewPinned(view: View, index: Int) {
+        // View 开始吸顶时调用
+        view.elevation = 8f
+    }
+
+    override fun onViewUnpinned(view: View, index: Int) {
+        // View 取消吸顶时调用
+        view.elevation = 0f
+    }
+
+    override fun onPinnedViewOffsetChanged(view: View, index: Int, offset: Int) {
+        // 吸顶 View 偏移量变化时调用（可用于动画）
+    }
+
+    override fun onPinnedViewsChanged(pinnedViews: List<View>) {
+        // 吸顶 View 列表变化时调用
+    }
+
+    override fun onPinnedHeightChanged(totalPinnedHeight: Int) {
+        // 吸顶区域总高度变化时调用
+    }
+})
+```
+
+也可以主动查询当前状态：
+
+```kotlin
+// 获取当前所有吸顶的 View
+val pinnedViews = stickyLinearLayout.getPinnedViews()
+
+// 获取吸顶区域总高度
+val pinnedHeight = stickyLinearLayout.getPinnedHeight()
+
+// 检查某个 View 是否正在吸顶
+val isPinned = stickyLinearLayout.isViewPinned(myView)
+```
 
 ### 📐 工作原理
 

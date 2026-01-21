@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="StickyLinearLayout">
+    <!-- Layout parameters for children of StickyLinearLayout -->
+    <declare-styleable name="StickyLinearLayout_Layout">
+        <!-- Whether this child view should stick to the top when scrolled -->
         <attr name="layout_pin" format="boolean" />
     </declare-styleable>
 

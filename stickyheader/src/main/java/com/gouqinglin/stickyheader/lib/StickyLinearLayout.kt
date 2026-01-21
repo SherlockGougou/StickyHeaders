@@ -59,9 +59,59 @@ class StickyLinearLayout @JvmOverloads constructor(
 
     private val TAG = "StickyLinearLayout"
 
+    // 回调监听器
+    private var stickyStateChangedListener: OnStickyStateChangedListener? = null
+
+    // 记录每个pin View的当前吸顶状态，用于检测状态变化
+    private val pinnedStateMap = mutableMapOf<Int, Boolean>()
+
+    // 上一次的吸顶View列表，用于检测变化
+    private var lastPinnedViews = listOf<View>()
+
+    // 上一次的吸顶总高度
+    private var lastPinnedHeight = 0
+
     init {
         // 启用自定义绘制顺序，让pin的View绘制在最上层
         isChildrenDrawingOrderEnabled = true
+    }
+
+    /**
+     * Sets a listener to receive callbacks when sticky state changes.
+     *
+     * @param listener The listener to set, or null to remove the current listener
+     */
+    fun setOnStickyStateChangedListener(listener: OnStickyStateChangedListener?) {
+        stickyStateChangedListener = listener
+    }
+
+    /**
+     * Returns the current list of pinned views.
+     *
+     * @return List of views that are currently pinned, in order from top to bottom
+     */
+    fun getPinnedViews(): List<View> {
+        return lastPinnedViews.toList()
+    }
+
+    /**
+     * Returns the total height of all currently pinned views.
+     *
+     * @return The total height in pixels
+     */
+    fun getPinnedHeight(): Int {
+        return lastPinnedHeight
+    }
+
+    /**
+     * Checks if a specific view is currently pinned.
+     *
+     * @param view The view to check
+     * @return true if the view is currently pinned, false otherwise
+     */
+    fun isViewPinned(view: View): Boolean {
+        val index = indexOfChild(view)
+        return pinnedStateMap[index] == true
     }
 
     // 每个子View及其上方所有View的高度累计
@@ -165,8 +215,8 @@ class StickyLinearLayout @JvmOverloads constructor(
         var pin = false
 
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs) {
-            val ta = c?.obtainStyledAttributes(attrs, R.styleable.StickyLinearLayout)
-            pin = ta?.getBoolean(R.styleable.StickyLinearLayout_layout_pin, false) ?: false
+            val ta = c?.obtainStyledAttributes(attrs, R.styleable.StickyLinearLayout_Layout)
+            pin = ta?.getBoolean(R.styleable.StickyLinearLayout_Layout_layout_pin, false) ?: false
             ta?.recycle()
         }
 
@@ -196,6 +246,9 @@ class StickyLinearLayout @JvmOverloads constructor(
             // 用于存储已经吸顶的pin View累计高度
             var pinnedStackHeight = 0
 
+            // 当前吸顶的View列表
+            val currentPinnedViews = mutableListOf<View>()
+
             (0 until childCount).forEach { i ->
                 val child = getChildAt(i)
                 val lp = child.layoutParams as? LayoutParams
@@ -222,13 +275,42 @@ class StickyLinearLayout @JvmOverloads constructor(
                         // 需要吸顶：设置偏移使View停在目标位置（已吸顶View的下方）
                         finalOffset = baseOffset - stickyStartHeight + pinnedStackHeight
                         pinnedStackHeight += child.measuredHeight
+                        currentPinnedViews.add(child)
                     } else {
                         // 不需要吸顶：保持原位
                         finalOffset = 0
                     }
 
                     getViewOffsetHelper(child).topAndBottomOffset = finalOffset
+
+                    // 检测状态变化并触发回调
+                    val wasPinned = pinnedStateMap[i] ?: false
+                    if (shouldPin != wasPinned) {
+                        pinnedStateMap[i] = shouldPin
+                        if (shouldPin) {
+                            stickyStateChangedListener?.onViewPinned(child, i)
+                        } else {
+                            stickyStateChangedListener?.onViewUnpinned(child, i)
+                        }
+                    }
+
+                    // 如果正在吸顶，通知偏移量变化
+                    if (shouldPin && finalOffset > 0) {
+                        stickyStateChangedListener?.onPinnedViewOffsetChanged(child, i, finalOffset)
+                    }
                 }
+            }
+
+            // 检测吸顶View列表变化
+            if (currentPinnedViews != lastPinnedViews) {
+                lastPinnedViews = currentPinnedViews.toList()
+                stickyStateChangedListener?.onPinnedViewsChanged(lastPinnedViews)
+            }
+
+            // 检测吸顶总高度变化
+            if (pinnedStackHeight != lastPinnedHeight) {
+                lastPinnedHeight = pinnedStackHeight
+                stickyStateChangedListener?.onPinnedHeightChanged(pinnedStackHeight)
             }
         }
     }
