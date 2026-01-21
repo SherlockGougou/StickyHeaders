@@ -1,11 +1,5 @@
 # StickyHeaders
 
-<p align="center">
-  <img src="docs/images/demo_initial.png" width="200" alt="initial">
-  <img src="docs/images/demo_scrolling.png" width="200" alt="scrolling">
-  <img src="docs/images/demo_collapsed.png" width="200" alt="collapsed">
-</p>
-
 https://github.com/user-attachments/assets/7dcad323-083e-4df1-8625-b7d79f69b825
 
 ---
