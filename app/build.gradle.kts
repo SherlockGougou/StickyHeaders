@@ -3,6 +3,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("./common-60.keystore")
+            storePassword = "000000"
+            keyAlias = "000000"
+            keyPassword = "000000"
+        }
+    }
     namespace = "com.gouqinglin.stickyheader"
     compileSdk {
         version = release(36) {
@@ -14,10 +22,12 @@ android {
         applicationId = "com.gouqinglin.stickyheader"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig = signingConfigs.getByName("debug")
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -27,8 +37,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -40,7 +50,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(project(":stickyheader"))
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

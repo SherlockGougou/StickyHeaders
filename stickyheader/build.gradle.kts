@@ -25,22 +25,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     api(libs.androidx.core.ktx)
-
-    // Material Design组件，用于AppBarLayout
-    api("com.google.android.material:material:1.12.0")
-
-    // For nested scrolling interop helpers.
-    api("androidx.customview:customview:1.2.0")
-
-    // Common nested scrolling child.
-    api("androidx.recyclerview:recyclerview:1.4.0")
+    api(libs.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -2,7 +2,6 @@ package com.gouqinglin.stickyheader.lib
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.OverScroller
@@ -21,14 +20,13 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
     private var shouldBlockNestedScroll = false
 
     override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
-        Log.d(TAG, "onInterceptTouchEvent:" + child.totalScrollRange)
         shouldBlockNestedScroll = false
         if (isFlinging) {
             shouldBlockNestedScroll = true
         }
 
         when (ev.actionMasked) {
-            MotionEvent.ACTION_DOWN -> stopAppbarLayoutFling(child) //手指触摸屏幕的时候停止fling事件
+            MotionEvent.ACTION_DOWN -> stopAppbarLayoutFling(child) // 手指触摸屏幕的时候停止fling事件
         }
 
         return super.onInterceptTouchEvent(parent, child, ev)
@@ -78,7 +76,7 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
      * @param appBarLayout
      */
     private fun stopAppbarLayoutFling(appBarLayout: AppBarLayout) {
-        //通过反射拿到HeaderBehavior中的flingRunnable变量
+        // 通过反射拿到HeaderBehavior中的flingRunnable变量
         try {
             val flingRunnableField = this.flingRunnableField
             val scrollerField = this.scrollerField
@@ -88,7 +86,6 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
             val flingRunnable = flingRunnableField.get(this) as Runnable?
             val overScroller = scrollerField.get(this) as OverScroller?
             if (flingRunnable != null) {
-                Log.d(TAG, "存在flingRunnable")
                 appBarLayout.removeCallbacks(flingRunnable)
                 flingRunnableField.set(this, null)
             }
@@ -110,7 +107,6 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
         nestedScrollAxes: Int,
         type: Int
     ): Boolean {
-        Log.d(TAG, "onStartNestedScroll")
         stopAppbarLayoutFling(child)
         return super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type)
     }
@@ -124,11 +120,9 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
         consumed: IntArray,
         type: Int
     ) {
-        Log.d(TAG, "onNestedPreScroll:" + child.totalScrollRange + " ,dx:" + dx + " ,dy:" + dy + " ,type:" + type)
-
-        //type返回1时，表示当前target处于非touch的滑动，
-        //该bug的引起是因为appbar在滑动时，CoordinatorLayout内的实现NestedScrollingChild2接口的滑动子类还未结束其自身的fling
-        //所以这里监听子类的非touch时的滑动，然后block掉滑动事件传递给AppBarLayout
+        // type返回1时，表示当前target处于非touch的滑动，
+        // 该bug的引起是因为appbar在滑动时，CoordinatorLayout内的实现NestedScrollingChild2接口的滑动子类还未结束其自身的fling
+        // 所以这里监听子类的非touch时的滑动，然后block掉滑动事件传递给AppBarLayout
         if (type == TYPE_FLING) {
             isFlinging = true
         }
@@ -148,25 +142,18 @@ class AppBarLayoutBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayo
         dyUnconsumed: Int,
         type: Int
     ) {
-        Log.d(
-            TAG, ("onNestedScroll: target:" + target.javaClass + " ," + child.totalScrollRange + " ,dxConsumed:"
-                    + dxConsumed + " ,dyConsumed:" + dyConsumed + " " + ",type:" + type)
-        )
         if (!shouldBlockNestedScroll) {
             super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type)
         }
     }
 
     override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
-        Log.d(TAG, "onStopNestedScroll")
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
         isFlinging = false
         shouldBlockNestedScroll = false
     }
 
     companion object {
-        private const val TAG = "AppBarLayoutBehavior"
-
         private const val TYPE_FLING = 1
     }
 }

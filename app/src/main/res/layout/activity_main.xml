@@ -1,128 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <View
+        android:id="@+id/viewTop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_behavior=".lib.AppBarLayoutBehavior">
+        android:layout_height="25dp"
+        android:background="#F18800"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- 滚出去1：设置scroll|snap，实现吸附效果，可滑出屏幕 -->
-        <TextView
-            android:id="@+id/tv_scroll_out_1"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="#F18800"
-            android:gravity="center"
-            android:text="滚出去1"
-            android:textColor="#FFFFFF"
-            android:textSize="38sp"
-            app:layout_scrollFlags="scroll|snap" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewTop">
 
-        <!-- StickyLinearLayout：包含需要吸顶的View -->
-        <com.gouqinglin.stickyheader.lib.StickyLinearLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_behavior=".lib.AppBarLayoutBehavior">
 
-            <!-- HEADER1：第一个吸顶View -->
+            <!-- 滚出去1：设置scroll|snap，实现吸附效果，可滑出屏幕 -->
             <TextView
-                android:id="@+id/tv_header_1"
+                android:id="@+id/tv_scroll_out_1"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="#434152"
+                android:layout_height="100dp"
+                android:background="#F18800"
                 android:gravity="center"
-                android:text="HEADER1"
+                android:text="滚出去1"
                 android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                app:layout_pin="true" />
+                android:textSize="38sp"
+                app:layout_scrollFlags="scroll|snap" />
 
-            <!-- 滚出去2：普通View，会随着滚动消失 -->
-            <TextView
-                android:id="@+id/tv_scroll_out_2"
+            <!-- StickyLinearLayout：包含需要吸顶的View -->
+            <com.gouqinglin.stickyheader.lib.StickyLinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="#0188F0"
-                android:gravity="center"
-                android:text="滚出去2"
-                android:textColor="#FFFFFF"
-                android:textSize="38sp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <!-- HEADER2：第二个吸顶View -->
-            <TextView
-                android:id="@+id/tv_header_2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#9C27B0"
-                android:gravity="center"
-                android:text="HEADER2"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                app:layout_pin="true" />
+                <!-- HEADER1：第一个吸顶View -->
+                <TextView
+                    android:id="@+id/tv_header_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="#434152"
+                    android:gravity="center"
+                    android:text="HEADER1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    app:layout_pin="true" />
 
-            <!-- 滚出去3：普通View，会随着滚动消失 -->
-            <TextView
-                android:id="@+id/tv_scroll_out_3"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="#FF5722"
-                android:gravity="center"
-                android:text="滚出去3"
-                android:textColor="#FFFFFF"
-                android:textSize="38sp" />
+                <!-- 滚出去2：普通View，会随着滚动消失 -->
+                <TextView
+                    android:id="@+id/tv_scroll_out_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#0188F0"
+                    android:gravity="center"
+                    android:text="滚出去2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="38sp" />
 
-            <!-- HEADER3：第三个吸顶View -->
-            <TextView
-                android:id="@+id/tv_header_3"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#673AB7"
-                android:gravity="center"
-                android:text="HEADER3"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                app:layout_pin="true" />
+                <!-- HEADER2：第二个吸顶View -->
+                <TextView
+                    android:id="@+id/tv_header_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#9C27B0"
+                    android:gravity="center"
+                    android:text="HEADER2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    app:layout_pin="true" />
 
-            <!-- 滚出去4：普通View，会随着滚动消失 -->
-            <TextView
-                android:id="@+id/tv_scroll_out_4"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="#FFC107"
-                android:gravity="center"
-                android:text="滚出去4"
-                android:textColor="#FFFFFF"
-                android:textSize="36sp" />
+                <!-- 滚出去3：普通View，会随着滚动消失 -->
+                <TextView
+                    android:id="@+id/tv_scroll_out_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#FF5722"
+                    android:gravity="center"
+                    android:text="滚出去3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="38sp" />
 
-            <!-- HEADER4：第四个吸顶View -->
-            <TextView
-                android:id="@+id/tv_header_4"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#009688"
-                android:gravity="center"
-                android:text="HEADER4"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                app:layout_pin="true" />
+                <!-- HEADER3：第三个吸顶View -->
+                <TextView
+                    android:id="@+id/tv_header_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#673AB7"
+                    android:gravity="center"
+                    android:text="HEADER3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    app:layout_pin="true" />
 
-        </com.gouqinglin.stickyheader.lib.StickyLinearLayout>
+                <!-- 滚出去4：普通View，会随着滚动消失 -->
+                <TextView
+                    android:id="@+id/tv_scroll_out_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#FFC107"
+                    android:gravity="center"
+                    android:text="滚出去4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="36sp" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+                <!-- HEADER4：第四个吸顶View -->
+                <TextView
+                    android:id="@+id/tv_header_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#009688"
+                    android:gravity="center"
+                    android:text="HEADER4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    app:layout_pin="true" />
 
-    <!-- 主要内容区域：使用NestedScrollView或RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            </com.gouqinglin.stickyheader.lib.StickyLinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- 主要内容区域：使用NestedScrollView或RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
