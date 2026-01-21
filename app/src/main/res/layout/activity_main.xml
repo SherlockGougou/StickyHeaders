@@ -27,7 +27,6 @@
             app:layout_scrollFlags="scroll|snap" />
 
         <!-- StickyLinearLayout：包含需要吸顶的View -->
-        <!-- 设置scroll|exitUntilCollapsed，滚动时会保留minimumHeight -->
         <com.gouqinglin.stickyheader.lib.StickyLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
