@@ -1,4 +1,4 @@
-# StickyHeader
+# StickyHeaders
 
 <p align="center">
   <img src="docs/images/demo_initial.png" width="200" alt="initial">
@@ -8,7 +8,7 @@
 
 ---
 
-[![](https://jitpack.io/v/SherlockGougou/StickyHeader.svg)](https://jitpack.io/#SherlockGougou/StickyHeader)
+[![](https://jitpack.io/v/SherlockGougou/StickyHeaders.svg)](https://jitpack.io/#SherlockGougou/StickyHeaders)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [English](#english) | [中文](#中文)
@@ -45,7 +45,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeader:1.0.0")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.0")
 }
 ```
 
@@ -196,7 +196,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.SherlockGougou:StickyHeader:1.0.0")
+    implementation("com.github.SherlockGougou:StickyHeaders:1.0.0")
 }
 ```
 
